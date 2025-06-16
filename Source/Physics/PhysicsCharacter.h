@@ -62,6 +62,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Config, meta = (AllowPrivateAccess = "true"))
 	float m_MaxStamina;
 
+	float m_CurrentStamina;
+
 	/** Stamina depletion rate, in seconds */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Config, meta = (AllowPrivateAccess = "true"))
 	float m_StaminaDepletionRate;
@@ -86,6 +88,19 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Config, meta = (AllowPrivateAccess = "true"))
 	float m_BaseInterpolationSpeed = 1000.f;
 
+	float m_DistanceWithGrabbedObject;
+
+	TObjectPtr<UPrimitiveComponent> m_GrabbedComponent;
+
+	TObjectPtr<UCharacterMovementComponent> CharacterMovementComponent;
+
+	float m_SprintSpeed = 1000.0f;
+
+	float m_WalkSpeed = 600.0f;
+
+	bool bIsTryingToRun = false;
+
+	bool bBlockSprint = false;
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = DebugData, meta = (AllowPrivateAccess = "true"))
 	UMeshComponent* m_HighlightedMesh = nullptr;
@@ -116,6 +131,11 @@ public:
 	USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 	void SetIsSprinting(bool NewIsSprinting);
-
+	void UpdateGrabbedObject();
+	void FindGrabbableObjects();
+	void UpdateStamina(float DeltaSeconds);
+	FHitResult RayCast() const;
+	UFUNCTION(BlueprintCallable)
+	float GetStamina() const;
 };
 
