@@ -15,6 +15,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = Projectile)
 	TSubclassOf<class APhysicsProjectile> m_ProjectileClass;
 
+	UPROPERTY(EditAnywhere)
+	bool bProjectileExplode;
 public:
 	/** UPhysicsWeaponComponent **/
 	virtual void Fire() override;

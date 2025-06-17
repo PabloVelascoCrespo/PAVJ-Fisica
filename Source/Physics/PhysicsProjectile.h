@@ -8,7 +8,7 @@
 
 class USphereComponent;
 class UProjectileMovementComponent;
-class UPhysicsWeaponComponent;
+class UProjectileWeaponComponent;
 
 UCLASS(config=Game)
 class APhysicsProjectile : public AActor
@@ -28,8 +28,17 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
 	bool m_DestroyOnHit;
 
+	UPROPERTY(EditAnywhere)
+	float m_Radius;
+
+	UPROPERTY(EditAnywhere)
+	float m_Strength;
+
+	UPROPERTY(EditAnywhere)
+	float m_Damage;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Damage)
-	UPhysicsWeaponComponent* m_OwnerWeapon;
+	UProjectileWeaponComponent* m_OwnerWeapon;
 public:
 	APhysicsProjectile();
 

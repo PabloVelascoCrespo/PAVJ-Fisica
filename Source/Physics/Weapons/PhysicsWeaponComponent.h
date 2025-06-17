@@ -50,7 +50,8 @@ public:
 	/** Make the weapon Fire a Projectile */
 	UFUNCTION(BlueprintCallable, Category="Weapon")
 	virtual void Fire();
-
+	/** The Character holding this weapon*/
+	APhysicsCharacter* Character;
 protected:
 
 	virtual void BeginPlay() override;
@@ -58,7 +59,4 @@ protected:
 	UFUNCTION()
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
-protected:
-	/** The Character holding this weapon*/
-	APhysicsCharacter* Character;
 };

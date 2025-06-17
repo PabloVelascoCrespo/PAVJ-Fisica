@@ -19,6 +19,9 @@ public:
 	UPROPERTY(EditAnywhere)
 	float m_fRange;
 
+	UPROPERTY(EditAnywhere)
+	float m_ImpactForce;
+
 	UPROPERTY(BlueprintAssignable)
 	FHitscanImpact onHitscanImpact;
 };

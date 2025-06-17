@@ -11,4 +11,8 @@ class PHYSICS_API UWeaponDamageType : public UObject
 
 public:
 	/** @TODO: Create damage data object */
+
+	//DAÑO
+	//ENUM IMPULSO
+	//SUBCLASS DAMAGE TYPE CLASS
 };
