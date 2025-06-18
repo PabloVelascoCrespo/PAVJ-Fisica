@@ -39,42 +39,10 @@ void APhysicsProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
 {
   // @TODO: Handle impact
 
-  if (OtherActor && OtherActor != this)
+  if (OtherActor && OtherActor != this && m_OwnerWeapon)
   {
-    // TODO: change the UDamageType::StaticClass()
-    // TODO: subir la funcionalidad al arma?
-    FHitResult HitResult;
-    UGameplayStatics::ApplyPointDamage(OtherActor, m_Damage, GetVelocity().GetSafeNormal(), HitResult, m_OwnerWeapon->Character->GetController(), this, UDamageType::StaticClass());
-    if (!m_OwnerWeapon->bProjectileExplode && OtherComp->IsSimulatingPhysics()) // LINEAL
-    {
-      OtherComp->AddImpulseAtLocation(GetVelocity() * 100.0f, GetActorLocation());
-    }
-    else // EXPLOSION
-    {
-      TArray<FHitResult> HitResults;
-      FCollisionQueryParams QueryParams;
-      QueryParams.AddIgnoredActor(this);
-      FVector Center = GetActorLocation();
-      GetWorld()->SweepMultiByChannel(HitResults, Center, Center, FQuat::Identity, ECC_Visibility, FCollisionShape::MakeSphere(m_Radius), QueryParams);
-      for (const FHitResult& Overlap : HitResults)
-      {
-        if (AActor* OverlappedActor = Overlap.GetActor())
-        {
-          //UGameplayStatics::ApplyRadialDamage(GetWorld(), m_Damage, Center, m_Radius, UDamageType::StaticClass(),, this, );
-          UGameplayStatics::ApplyDamage(OtherActor, m_Damage, m_OwnerWeapon->Character->GetController(), this, UDamageType::StaticClass());
-        }
-        if (UPrimitiveComponent* OverlappedActorComponent = Overlap.GetComponent())
-        {
-          if (OverlappedActorComponent->IsSimulatingPhysics())
-          {
-            OverlappedActorComponent->AddRadialImpulse(Center, m_Radius, m_Strength, ERadialImpulseFalloff::RIF_Linear);
-          }
-        }
-      }
-    }
+    m_OwnerWeapon->ApplyDamage(OtherActor, Hit, this);
   }
-
-
   if (m_DestroyOnHit)
   {
     Destroy();

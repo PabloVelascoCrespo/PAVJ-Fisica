@@ -145,7 +145,7 @@ void APhysicsCharacter::UpdateGrabbedObject()
 void APhysicsCharacter::FindGrabbableObjects()
 {
 	FHitResult Hit = RayCast();
-	if (!Hit.GetActor() || !(Hit.GetComponent()->Mobility == EComponentMobility::Movable))
+	if (!Hit.GetActor() || !(Hit.GetComponent()->Mobility == EComponentMobility::Movable) || !Hit.GetComponent()->IsSimulatingPhysics())
 	{
 		return;
 	}
@@ -226,7 +226,14 @@ void APhysicsCharacter::GrabObject(const FInputActionValue& Value)
 		}
 		m_GrabbedComponent = Hit.GetActor()->GetComponentByClass<UPrimitiveComponent>();
 		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, (TEXT("Grabbing: %s"), *m_GrabbedComponent->GetName()));
-		m_PhysicsHandle->GrabComponentAtLocationWithRotation(m_GrabbedComponent, FName(""), Hit.Location, Hit.GetActor()->GetActorRotation());
+		if (Hit.GetActor()->Tags.Contains("Door"))
+		{
+			m_PhysicsHandle->GrabComponentAtLocation(m_GrabbedComponent, Hit.BoneName, Hit.Location);
+		}
+		else
+		{
+			m_PhysicsHandle->GrabComponentAtLocationWithRotation(m_GrabbedComponent, Hit.BoneName, Hit.Location, Hit.GetActor()->GetActorRotation());
+		}
 		m_DistanceWithGrabbedObject = Hit.Distance;
 	}
 }

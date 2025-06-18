@@ -11,7 +11,9 @@
 #include "Animation/AnimInstance.h"
 #include "Engine/LocalPlayer.h"
 #include "Engine/World.h"
+#include "PhysicsProjectile.h"
 #include <Components/SphereComponent.h>
+#include <Camera/CameraComponent.h>
 
 // Sets default values for this component's properties
 UPhysicsWeaponComponent::UPhysicsWeaponComponent()
@@ -24,6 +26,8 @@ UPhysicsWeaponComponent::UPhysicsWeaponComponent()
 void UPhysicsWeaponComponent::BeginPlay()
 {
 	Super::BeginPlay();
+	ActorsToIgnore = { Character };
+
 }
 
 
@@ -49,6 +53,29 @@ void UPhysicsWeaponComponent::Fire()
 		{
 			AnimInstance->Montage_Play(FireAnimation, 1.f);
 		}
+	}
+}
+
+void UPhysicsWeaponComponent::ApplyDamage(AActor* OtherActor, FHitResult HitInfo, APhysicsProjectile* Projectile)
+{
+	if (!OtherActor || !m_WeaponDamageType)
+	{
+		return;
+	}
+	switch (m_WeaponDamageType->m_ImpulseType)
+	{
+	case EImpulseType::RAY:
+		UGameplayStatics::ApplyPointDamage(OtherActor, m_WeaponDamageType->m_Damage, HitInfo.ImpactNormal * -1.0f, HitInfo, Character->GetController(), Character, m_WeaponDamageType->m_DamageType);
+		break;
+	case EImpulseType::POINT:
+		UGameplayStatics::ApplyPointDamage(OtherActor, m_WeaponDamageType->m_Damage, Projectile->GetVelocity(), HitInfo, Character->GetController(), Projectile, m_WeaponDamageType->m_DamageType);
+		break;
+	case EImpulseType::RADIAL:
+		UGameplayStatics::ApplyRadialDamage(GetWorld(), m_WeaponDamageType->m_Damage, Projectile->GetActorLocation(), Projectile->m_Radius, m_WeaponDamageType->m_DamageType, ActorsToIgnore, Projectile, Character->GetController());
+		break;
+	default:
+		UGameplayStatics::ApplyDamage(OtherActor, m_WeaponDamageType->m_Damage, Character->GetController(), Character, m_WeaponDamageType->m_DamageType);
+		break;
 	}
 }
 

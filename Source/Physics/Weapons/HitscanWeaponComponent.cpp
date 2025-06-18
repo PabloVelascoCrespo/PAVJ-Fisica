@@ -25,22 +25,11 @@ void UHitscanWeaponComponent::Fire()
 
 	FHitResult HitResult;
 	FCollisionQueryParams Params;
-	bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, Params);
-
-	// DEBUG BORRAR!!!
-	DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 1.0f, 0, 1.0f);
-	if (bHit && HitResult.GetActor())
+	if (GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, Params))
 	{
-		AActor* HitActor = HitResult.GetActor();
-		if (UPrimitiveComponent* HitComp = HitResult.GetComponent())
-		{
-			if (HitComp->IsSimulatingPhysics())
-			{
-				FVector Impulse = ForwardVector * m_ImpactForce;
-				HitComp->AddImpulseAtLocation(Impulse, HitResult.ImpactPoint);
-			}
-		}
-		onHitscanImpact.Broadcast(HitActor, HitResult.ImpactPoint, ForwardVector);
+		AActor* OtherActor = HitResult.GetActor();
+		ApplyDamage(OtherActor, HitResult);
+		onHitscanImpact.Broadcast(OtherActor, HitResult.ImpactPoint, ForwardVector);
 	}
 
 }

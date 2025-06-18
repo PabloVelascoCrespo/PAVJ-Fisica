@@ -8,6 +8,7 @@
 #include "PhysicsWeaponComponent.generated.h"
 
 class APhysicsCharacter;
+class APhysicsProjectile;
 
 UCLASS(Blueprintable, BlueprintType, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class PHYSICS_API UPhysicsWeaponComponent : public USkeletalMeshComponent
@@ -52,6 +53,9 @@ public:
 	virtual void Fire();
 	/** The Character holding this weapon*/
 	APhysicsCharacter* Character;
+
+	virtual void ApplyDamage(AActor* OtherActor, FHitResult HitInfo , APhysicsProjectile* Projectile = nullptr);
+
 protected:
 
 	virtual void BeginPlay() override;
@@ -59,4 +63,5 @@ protected:
 	UFUNCTION()
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
+	TArray<AActor*> ActorsToIgnore;
 };
