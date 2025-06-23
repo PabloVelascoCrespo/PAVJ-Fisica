@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "BreakableTarget.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FTargetBroken, ABreakableTarget*, target);
+
 UCLASS()
 class PHYSICS_API ABreakableTarget : public AActor
 {
@@ -24,4 +26,6 @@ public:
 public:	
 	UFUNCTION()
 	void GeometryCollectionBroken(const struct FChaosBreakEvent& BreakEvent);
+
+	inline static FTargetBroken OnTargetBroken;
 };
